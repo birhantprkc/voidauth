@@ -18,6 +18,7 @@ import { TABLES } from '@shared/db'
 import { getGroupsCustomClaims, getUserCustomClaims } from './claims'
 import { calculateCustomClaims } from '@shared/user'
 import type { UsersResponse } from '@shared/api-response/admin/UsersResponse'
+import { escapeLikePattern } from './util'
 
 export async function getUsers(
   options: {
@@ -29,6 +30,7 @@ export async function getUsers(
   },
 ): Promise<UsersResponse> {
   const { page, pageSize, searchTerm, sortActive = 'createdAt', sortDirection = 'desc' } = options
+  const searchPattern = searchTerm ? `%${escapeLikePattern(searchTerm)}%` : undefined
 
   const query = db().table<User>(TABLES.USER).select<(User & { isAdmin: number })[]>('user.*', db().raw(`
       CASE 
@@ -42,10 +44,10 @@ export async function getUsers(
         ELSE 0 
       END as "isAdmin"
     `, [ADMIN_GROUP])).where((w) => {
-    if (searchTerm) {
-      w.whereRaw('lower("username") like lower(?)', [`%${searchTerm}%`])
-      w.orWhereRaw('lower("email") like lower(?)', [`%${searchTerm}%`])
-      w.orWhereRaw('lower("name") like lower(?)', [`%${searchTerm}%`])
+    if (searchPattern) {
+      w.whereRaw('lower("username") like lower(?) escape \'\\\'', [searchPattern])
+      w.orWhereRaw('lower("email") like lower(?) escape \'\\\'', [searchPattern])
+      w.orWhereRaw('lower("name") like lower(?) escape \'\\\'', [searchPattern])
     }
   })
 
