@@ -49,7 +49,7 @@ export async function getUsers(
     }
   })
 
-  const count = +((await query.clone().count({ count: '*' }).first())?.count ?? 0)
+  const count = +((await query.clone().clearSelect().count({ count: '*' }).first())?.count ?? 0)
 
   switch (sortActive) {
     case 'username':

@@ -1074,7 +1074,7 @@ adminRouter.get('/passwordresets',
       .innerJoin<User>(TABLES.USER, 'user.id', 'password_reset.userId')
       .where(db().ref('expiresAt').withSchema(TABLES.PASSWORD_RESET), '>=', new Date())
 
-    const count = +((await passwordResetsModel.clone().count({ count: '*' }).first())?.count ?? 0)
+    const count = +((await passwordResetsModel.clone().clearSelect().count({ count: '*' }).first())?.count ?? 0)
 
     switch (sortActive) {
       case 'username':
@@ -1164,7 +1164,7 @@ adminRouter.get('/emails',
 
     const emailsModel = db().table<EmailLog>(TABLES.EMAIL_LOG)
 
-    const count = +((await emailsModel.clone().count({ count: '*' }).first())?.count ?? 0)
+    const count = +((await emailsModel.clone().clearSelect().count({ count: '*' }).first())?.count ?? 0)
 
     switch (sortActive) {
       case 'to':
