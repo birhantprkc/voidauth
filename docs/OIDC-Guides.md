@@ -594,15 +594,6 @@ This setup supports:
 > [!NOTE]
 > This configuration uses separate OIDC client IDs for the Web, Desktop, Android, and iOS clients.
 
-**In VoidAuth OIDC App Page:**
-
-```plaintext
-Client ID: your-client-id
-Auth Method: Client Secret Post
-Client Secret: your-client-secret
-Redirect URLs: https://memos.example.com/auth/callback
-```
-
 **OpenCloud Configuration:**
 
 Add the following variables to your OpenCloud `.env` file.
@@ -704,114 +695,47 @@ Assign users to the appropriate group.
 
 The group names correspond directly to the OpenCloud roles configured in `proxy.yaml`.
 
-**Required Claims:**
-
-VoidAuth should provide the following claims:
-
-| Claim | Used for |
-| --- | --- |
-| `preferred_username` | OpenCloud username |
-| `email` | Email address |
-| `name` | Display name |
-| `groups` | OpenCloud groups and role assignment |
-
-The following scopes are used by the Web client:
-
-```text
-openid profile email groups
-```
-
-Native clients additionally request `offline_access`:
-
-```text
-openid profile email groups offline_access
-```
-
 **In VoidAuth OIDC App Page:**
 
 Create separate OIDC applications for the OpenCloud clients.
 
 **OpenCloud Web:**
 
+Replace `https://opencloud.example.com` with the URL of your OpenCloud instance.
+
 ```text
 Client ID: web
-Auth Method: none
-Client Secret: not needed
-
-Redirect URIs:
-https://opencloud.example.com/
-https://opencloud.example.com/oidc-callback.html
-https://opencloud.example.com/oidc-silent-redirect.html
-
-Scopes:
-openid
-profile
-email
-groups
+Auth Method: None (Public)
+Redirect URLs:
+- https://opencloud.example.com/
+- https://opencloud.example.com/oidc-callback.html
+- https://opencloud.example.com/oidc-silent-redirect.html
 ```
-
-Replace `https://opencloud.example.com` with the URL of your OpenCloud instance.
 
 **OpenCloud Desktop:**
 
 ```text
 Client ID: OpenCloudDesktop
-Auth Method: none
-Client Secret: not needed
-
-Redirect URIs:
-http://127.0.0.1:*
-http://localhost:*
-
-Scopes:
-openid
-profile
-email
-groups
-offline_access
+Auth Method: None (Public)
+Redirect URLs:
+- http://127.0.0.1:*
+- http://localhost:*
 ```
-
-The Desktop client is a public/native OIDC client and should not require a client secret.
 
 **OpenCloud Android:**
 
 ```text
 Client ID: OpenCloudAndroid
-Auth Method: none
-Client Secret: not needed
-
-Redirect URI:
-oc://android.opencloud.eu
-
-Scopes:
-openid
-profile
-email
-groups
-offline_access
-```
-
-The Android client is a public/native OIDC client and should not require a client secret.
+Auth Method: None (Public)
+Redirect URLs: oc://android.opencloud.eu
 
 **OpenCloud iOS:**
 
 ```text
 Client ID: OpenCloudIOS
-Auth Method: none
-Client Secret: not needed
-
-Redirect URI:
-oc://ios.opencloud.eu
-
-Scopes:
-openid
-profile
-email
-groups
-offline_access
+Auth Method: None (Public)
+Redirect URLs: oc://ios.opencloud.eu
 ```
-
-The iOS client is a public/native OIDC client and should not require a client secret.
 
 **Automatic Provisioning:**
 
